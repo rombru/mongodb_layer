@@ -12,8 +12,8 @@ email=rom.bruyere@gmail.com
 
 about=This plugin gives the possibility to create a layer from MongoDB datasource.
 
-tracker=http://bugs
-repository=http://repo
+tracker=https://github.com/rombru/mongodb_layer/issues
+repository=https://github.com/rombru/mongodb_layer
 # End of mandatory metadata
 
 # Recommended items:
