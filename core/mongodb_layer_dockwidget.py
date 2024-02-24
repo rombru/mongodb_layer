@@ -29,6 +29,7 @@ from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.QtCore import pyqtSignal
 from pymongo import MongoClient
 from qgis._core import QgsProject
+import re
 
 from .get_attribute_aggregation_pipeline import get_attribute_aggregation_pipeline
 from .get_geometry_type import get_geometry_type
@@ -141,12 +142,15 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         if not limit:
             limit = "1000"
 
-        data = list(self.mongo_client[self.db][self.collection].find(json.loads(query)).limit(int(limit)))
+        json_query = json.loads(self.double_quote_json_keys(query))
+        data = list(self.mongo_client[self.db][self.collection].find(json_query).limit(int(limit)))
         geometry_type = get_geometry_type(data)
         layer = MongoDBLayer(data, self.collection, self.geometry_field, geometry_type, self.geometry_format)
+
         QgsProject.instance().addMapLayer(layer)
 
-
+    def double_quote_json_keys(self, json):
+        return re.sub('([{,]\s*)([^"\':]+)(\s*:)', "\g<1>\"\g<2>\"\g<3>", json)
 
     def closeEvent(self, event):
         self.closingPlugin.emit()
