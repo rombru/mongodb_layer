@@ -21,6 +21,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+import ast
 import json
 import os
 
@@ -142,15 +143,18 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         if not limit:
             limit = "1000"
 
-        json_query = json.loads(self.double_quote_json_keys(query))
+        json_query = json.loads(self.replace_simple_quote(self.double_quote_json_keys(query)))
         data = list(self.mongo_client[self.db][self.collection].find(json_query).limit(int(limit)))
         geometry_type = get_geometry_type(data)
         layer = MongoDBLayer(data, self.collection, self.geometry_field, geometry_type, self.geometry_format)
 
         QgsProject.instance().addMapLayer(layer)
 
-    def double_quote_json_keys(self, json):
-        return re.sub('([{,]\s*)([^"\':]+)(\s*:)', "\g<1>\"\g<2>\"\g<3>", json)
+    def double_quote_json_keys(self, json_string):
+        return re.sub('([{,]\s*)([^"\':]+)(\s*:)', "\g<1>\"\g<2>\"\g<3>", json_string)
+
+    def replace_simple_quote(self, json_string):
+        return json.dumps(ast.literal_eval(json_string))
 
     def closeEvent(self, event):
         self.closingPlugin.emit()
