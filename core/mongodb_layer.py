@@ -46,6 +46,21 @@ class MongoDBLayer(QgsVectorLayer):
                 [point_from_coord(pt) for pt in ring]
                 for ring in coordinates
             ])
+        elif self.geometry_type == GeometryType.MULTIPOINT:
+            return QgsGeometry.fromMultiPointXY([
+                point_from_coord(pt) for pt in coordinates
+            ])
+        elif self.geometry_type == GeometryType.MULTILINESTRING:
+            return QgsGeometry.fromMultiPolylineXY([
+                [point_from_coord(pt) for pt in ring]
+                for ring in coordinates
+            ])
+        elif self.geometry_type == GeometryType.MULTIPOLYGON:
+            return QgsGeometry.fromMultiPolygonXY([
+                [[point_from_coord(pt) for pt in ring]
+                 for ring in inner_polygon]
+                for inner_polygon in coordinates
+            ])
 
 
 def point_from_coord(coordinates):
