@@ -6,11 +6,13 @@
 name=MongoDB Layer
 qgisMinimumVersion=3.0
 description=This plugin gives the possibility to create a layer from MongoDB datasource
-version=0.1
+version=0.0.1
 author=Romain Bruyère
 email=rom.bruyere@gmail.com
 
-about=This plugin gives the possibility to create a layer from MongoDB datasource.
+about=This plugin gives the possibility to create a layer from a MongoDB datasource.
+      It does require the installation of "pymongo" package for Python.
+      It has filtering and limit capabilities, helping the user to read a subset of documents.
 
 tracker=https://github.com/rombru/mongodb_layer/issues
 repository=https://github.com/rombru/mongodb_layer
@@ -19,8 +21,11 @@ repository=https://github.com/rombru/mongodb_layer
 # Recommended items:
 
 hasProcessingProvider=no
-# Uncomment the following line and add your changelog:
-# changelog=
+changelog=
+    Version 0.0.1
+    - Adding a point layer
+    - Filtering documents
+    - Limit the number of documents
 
 # Tags are comma separated with spaces allowed
 tags=python, mongodb, database, layer
