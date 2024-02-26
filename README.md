@@ -5,7 +5,8 @@ This repository contains a plugin which create layers from a MongoDB datasource.
 It does require the installation of "pymongo" package for Python.
 
 ## Features
-- Adding a point layer
+- Add Point support
+- Add LineString support
 - Filtering documents
 - Limit the number of documents
 

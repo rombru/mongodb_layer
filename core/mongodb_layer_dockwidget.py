@@ -145,7 +145,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         json_query = json.loads(self.replace_simple_quote(self.double_quote_json_keys(query)))
         data = list(self.mongo_client[self.db][self.collection].find(json_query).limit(int(limit)))
-        geometry_type = get_geometry_type(data)
+        geometry_type = get_geometry_type(data, self.geometry_field)
         layer = MongoDBLayer(data, self.collection, self.geometry_field, geometry_type, self.geometry_format)
 
         QgsProject.instance().addMapLayer(layer)

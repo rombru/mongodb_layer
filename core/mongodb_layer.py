@@ -19,26 +19,35 @@ class MongoDBLayer(QgsVectorLayer):
         self.data = data
         self.collection = collection
         self.geometry_field = geometry_field
+        self.geometry_type = geometry_type
 
         self.startEditing()
-        self.addMongoDBFeatures(data)
+        self.add_mongo_db_features(data)
         self.commitChanges()
 
-    def addMongoDBFeatures(self, data: list[object]):
+    def add_mongo_db_features(self, data: list[object]):
         for feature in data:
             qgs_feature = QgsFeature()
-            coordinates = list(map(get_number_as_double, feature["geometry"]["coordinates"]))
-            # coordinates = [float(str(d)) for d in coordinates]
-            qgs_feature.setGeometry(QgsGeometry.fromPointXY(
-                QgsPointXY(*coordinates)
-            ))
+            coordinates = feature[self.geometry_field]["coordinates"]
+            qgs_feature.setGeometry(self.create_qgs_geometry(coordinates))
+
             # qgsfeature.setAttributes(self.createAttributes(feature))
             self.addFeature(qgs_feature)
 
+    def create_qgs_geometry(self, coordinates):
+        if self.geometry_type == GeometryType.POINT:
+            return point_from_coord(coordinates)
+        elif self.geometry_type == GeometryType.LINESTRING:
+            return QgsGeometry.fromPolylineXY([
+                point_from_coord(pt) for pt in coordinates
+            ])
+
+def point_from_coord(coordinates):
+    float_coordinates = list(map(get_number_as_float, coordinates))
+    return QgsGeometry.fromPointXY(QgsPointXY(*float_coordinates))
 
 
-
-def get_number_as_double(num) -> float:
+def get_number_as_float(num) -> float:
     if isinstance(num, Decimal128):
         return float(num.to_decimal())
     else:

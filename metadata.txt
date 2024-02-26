@@ -23,7 +23,8 @@ repository=https://github.com/rombru/mongodb_layer
 hasProcessingProvider=no
 changelog=
     Version 0.0.1
-    - Adding a point layer
+    - Add Point support
+    - Add LineString support
     - Filtering documents
     - Limit the number of documents
 
