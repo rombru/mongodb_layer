@@ -15,4 +15,5 @@ It does require the installation of "pymongo" package for Python.
 - Support other type of geometry
 - Support other formats of geometry
 - Automatically verify the installation of pymongo
+- Add CRS support
 
