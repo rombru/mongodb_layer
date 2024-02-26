@@ -41,6 +41,12 @@ class MongoDBLayer(QgsVectorLayer):
             return QgsGeometry.fromPolylineXY([
                 point_from_coord(pt) for pt in coordinates
             ])
+        elif self.geometry_type == GeometryType.POLYGON:
+            return QgsGeometry.fromPolygonXY([
+                [point_from_coord(pt) for pt in ring]
+                for ring in coordinates
+            ])
+
 
 def point_from_coord(coordinates):
     float_coordinates = list(map(get_number_as_float, coordinates))

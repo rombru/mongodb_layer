@@ -6,6 +6,7 @@ from enum import Enum
 class GeometryType(Enum):
     POINT = "point"
     LINESTRING = "linestring"
+    POLYGON = "polygon"
 
     @staticmethod
     def from_geojson_type(type):
@@ -13,5 +14,7 @@ class GeometryType(Enum):
             return GeometryType.POINT
         elif type == "LineString":
             return GeometryType.LINESTRING
+        elif type == "Polygon":
+            return GeometryType.POLYGON
         else:
             raise NotImplementedError
