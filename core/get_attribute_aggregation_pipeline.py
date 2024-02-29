@@ -1,6 +1,7 @@
 get_attribute_aggregation_pipeline = [
-    {'$limit': 10000},
     {
+        '$limit': 10000
+    }, {
         '$project': {
             'keys': {
                 '$objectToArray': {
@@ -56,7 +57,19 @@ get_attribute_aggregation_pipeline = [
                                             '$reduce': {
                                                 'input': {
                                                     '$map': {
-                                                        'input': '$keys.v',
+                                                        'input': {
+                                                            '$filter': {
+                                                                'input': '$keys.v',
+                                                                'as': 'key',
+                                                                'cond': {
+                                                                    '$eq': [
+                                                                        {
+                                                                            '$type': '$$key'
+                                                                        }, 'object'
+                                                                    ]
+                                                                }
+                                                            }
+                                                        },
                                                         'as': 'nestedkey',
                                                         'in': {
                                                             '$objectToArray': '$$nestedkey'

@@ -24,6 +24,7 @@
 import ast
 import json
 import os
+from typing import Optional
 
 from PyQt5.QtWidgets import QPlainTextEdit, QPushButton, QComboBox, QLineEdit
 from qgis.PyQt import QtWidgets, uic
@@ -119,12 +120,12 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         self.collection = self.collectionBox.currentText()
         cursor = self.mongo_client[self.db][self.collection].aggregate(get_attribute_aggregation_pipeline)
-        keys: [str] = cursor.next()["keys"]
+        document: Optional = cursor.try_next()
+        keys: [str] = document["keys"] if document is not None else []
         keys.sort()
 
-        if keys:
-            self.geometryFieldBox.addItems(keys)
-            self.geometryFieldBox.setEnabled(True)
+        self.geometryFieldBox.addItems(keys)
+        self.geometryFieldBox.setEnabled(True)
 
     def geometry_field_box_change(self):
         self.geometry_field = self.geometryFieldBox.currentText()
