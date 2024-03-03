@@ -91,6 +91,8 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.geometryFieldBox.setEnabled(False)
         self.geometryFieldBox.clear()
         self.geometryFormatBox.setEnabled(False)
+        self.geometryFormatBox.setCurrentIndex(-1)
+        self.addLayerButton.setEnabled(False)
 
         self.connection_string = self.connectionTextEdit.toPlainText()
         self.mongo_client = MongoClient(self.connection_string, serverSelectionTimeoutMS=2000)
@@ -106,6 +108,8 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.geometryFieldBox.setEnabled(False)
         self.geometryFieldBox.clear()
         self.geometryFormatBox.setEnabled(False)
+        self.geometryFormatBox.setCurrentIndex(-1)
+        self.addLayerButton.setEnabled(False)
 
         self.db = self.databaseBox.currentText()
         collections = self.mongo_client[self.db].list_collection_names()
@@ -117,6 +121,8 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.geometryFieldBox.setEnabled(False)
         self.geometryFieldBox.clear()
         self.geometryFormatBox.setEnabled(False)
+        self.geometryFormatBox.setCurrentIndex(-1)
+        self.addLayerButton.setEnabled(False)
 
         self.collection = self.collectionBox.currentText()
         cursor = self.mongo_client[self.db][self.collection].aggregate(get_attribute_aggregation_pipeline)
@@ -130,10 +136,12 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     def geometry_field_box_change(self):
         self.geometry_field = self.geometryFieldBox.currentText()
         self.geometryFormatBox.setEnabled(True)
-        self.addLayerButton.setEnabled(True)
+        self.geometryFormatBox.setCurrentIndex(-1)
+        self.addLayerButton.setEnabled(False)
 
     def geometry_format_box_change(self):
         self.geometry_format = GeometryFormat.from_str(self.geometryFormatBox.currentText())
+        self.addLayerButton.setEnabled(True)
 
     def add_layer_button_clicked(self):
         query = self.queryTextEdit.toPlainText()
