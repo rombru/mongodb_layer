@@ -1,15 +1,17 @@
 import uuid
+from typing import Dict
 
 from bson import Decimal128
 from qgis._core import QgsVectorLayer, QgsFeature, QgsGeometry, QgsPointXY
 
+from .enums.field_type import FieldType
 from .enums.geometry_format import GeometryFormat
 from .enums.geometry_type import GeometryType
 
 
 class MongoDBLayer(QgsVectorLayer):
 
-    def __init__(self, data: list[object], collection: str, geometry_field: str, geometry_type: GeometryType,
+    def __init__(self, data: list[object], collection: str, geometry_field: str, fields_and_types: Dict[str,FieldType], geometry_type: GeometryType,
                  geometry_format: GeometryFormat):
         super(MongoDBLayer, self). \
             __init__(geometry_type.value,

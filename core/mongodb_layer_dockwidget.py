@@ -24,7 +24,7 @@
 import ast
 import json
 import os
-from typing import Optional
+from typing import Optional, Dict
 
 from PyQt5.QtWidgets import QPlainTextEdit, QPushButton, QComboBox, QLineEdit
 from qgis.PyQt import QtWidgets, uic
@@ -33,6 +33,7 @@ from pymongo import MongoClient
 from qgis._core import QgsProject
 import re
 
+from .enums.field_type import FieldType
 from .get_attribute_aggregation_pipeline import get_attribute_aggregation_pipeline
 from .get_geometry_type import get_geometry_type
 from .enums.geometry_format import GeometryFormat
@@ -61,6 +62,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     collection: str
     geometry_field: str
     geometry_format: GeometryFormat
+    fields_and_types: Dict[str, FieldType]
 
     def __init__(self, parent=None):
         """Constructor."""
@@ -125,13 +127,26 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.addLayerButton.setEnabled(False)
 
         self.collection = self.collectionBox.currentText()
+        fields = self.get_fields()
+        self.fields_and_types = self.fields_to_sorted_fields_and_types(fields)
+
+        self.geometryFieldBox.addItems(self.fields_and_types.keys())
+        self.geometryFieldBox.setEnabled(True)
+
+    def get_fields(self):
         cursor = self.mongo_client[self.db][self.collection].aggregate(get_attribute_aggregation_pipeline)
         document: Optional = cursor.try_next()
-        keys: [str] = document["keys"] if document is not None else []
-        keys.sort()
+        fields: [str] = document["keys"] if document is not None else []
+        return fields
 
-        self.geometryFieldBox.addItems(keys)
-        self.geometryFieldBox.setEnabled(True)
+    def fields_to_sorted_fields_and_types(self, keys):
+        attribute_types_map = {}
+        for key in keys:
+            type_key_pair = key.split(":")
+            attribute_types_map[type_key_pair[1]] = FieldType.from_str(type_key_pair[0])
+
+        return dict(sorted(attribute_types_map.items()))
+
 
     def geometry_field_box_change(self):
         self.geometry_field = self.geometryFieldBox.currentText()
@@ -155,7 +170,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         json_query = json.loads(self.replace_simple_quote(self.double_quote_json_keys(query)))
         data = list(self.mongo_client[self.db][self.collection].find(json_query).limit(int(limit)))
         geometry_type = get_geometry_type(data, self.geometry_field)
-        layer = MongoDBLayer(data, self.collection, self.geometry_field, geometry_type, self.geometry_format)
+        layer = MongoDBLayer(data, self.collection, self.geometry_field, self.fields_and_types, geometry_type, self.geometry_format)
 
         QgsProject.instance().addMapLayer(layer)
 

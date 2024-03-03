@@ -17,7 +17,11 @@ get_attribute_aggregation_pipeline = [
         '$project': {
             'keys': {
                 'key': [
-                    '$keys.k'
+                    {
+                        '$concat': [
+                            'root:', '$keys.k'
+                        ]
+                    }
                 ],
                 'nested': {
                     '$switch': {
@@ -38,7 +42,7 @@ get_attribute_aggregation_pipeline = [
                                         'as': 'nestedkey',
                                         'in': {
                                             '$concat': [
-                                                '$keys.k', '.', '$$nestedkey.k'
+                                                'object:', '$keys.k', '.', '$$nestedkey.k'
                                             ]
                                         }
                                     }
@@ -87,7 +91,7 @@ get_attribute_aggregation_pipeline = [
                                         'as': 'nestedkey',
                                         'in': {
                                             '$concat': [
-                                                '$keys.k', '.', '$$nestedkey.k'
+                                                'array:', '$keys.k', '.', '$$nestedkey.k'
                                             ]
                                         }
                                     }
