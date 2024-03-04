@@ -9,6 +9,7 @@ It does require the installation of "pymongo" package for Python.
 - Multipoint, multilinestring and multipolygon support
 - Filtering documents
 - Limit the number of documents
+- Nested geometry field support
 
 ## ToDo
 - Add the attributes to each feature
