@@ -15,6 +15,4 @@ It does require the installation of "pymongo" package for Python.
 - Support other formats of geometry
 - Automatically verify the installation of pymongo
 - Support projection with another CRS
-- Allow geometry field to be nested in an object 
-- Allow geometry field to be nested in an array
 
