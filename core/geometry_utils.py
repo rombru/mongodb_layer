@@ -16,7 +16,7 @@ def get_geometry_type(data: list[object], geometry_field: str, geometry_field_ty
 
 def get_any_geometry(data: list[object], geometry_field: str, geometry_field_type: FieldType):
     for feature in data:
-        geometry = get_geometries_by_feature(feature, geometry_field, geometry_field_type)
+        geometry = get_geometries_by_feature(feature, geometry_field, geometry_field_type)[0]
         if geometry: return geometry
 
     return None
@@ -36,14 +36,16 @@ def get_geometries_by_feature(feature, geometry_field: str, geometry_field_type:
         for feature_part in array_in_feature:
             geometries.append(feature_part[geometry_field_split[1]])
 
-    return filter(None, geometries)
+    return list(filter(None, geometries))
 
 
 def geometry_to_qgs_geometry(geometry, geometry_type: GeometryType):
     coordinates = geometry["coordinates"]
 
     if geometry_type == GeometryType.POINT:
-        return get_point_from_coord(coordinates)
+        return QgsGeometry.fromPointXY(
+            get_point_from_coord(coordinates)
+        )
     elif geometry_type == GeometryType.LINESTRING:
         return QgsGeometry.fromPolylineXY([
             get_point_from_coord(pt) for pt in coordinates
@@ -72,7 +74,7 @@ def geometry_to_qgs_geometry(geometry, geometry_type: GeometryType):
 
 def get_point_from_coord(coordinates):
     float_coordinates = list(map(get_number_as_float, coordinates))
-    return QgsGeometry.fromPointXY(QgsPointXY(*float_coordinates))
+    return QgsPointXY(*float_coordinates)
 
 
 def get_number_as_float(num) -> float:
