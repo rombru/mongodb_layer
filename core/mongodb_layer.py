@@ -47,3 +47,5 @@ class MongoDBLayer(QgsVectorLayer):
                 qgs_geometry.combine(next_qgs_geometry)
             else:
                 qgs_geometry = next_qgs_geometry
+
+        return qgs_geometry
