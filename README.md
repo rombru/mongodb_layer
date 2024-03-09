@@ -10,6 +10,7 @@ It does require the installation of "pymongo" package for Python.
 - Filtering documents
 - Limit the number of documents
 - Nested geometry field support
+- List of geometries by feature support
 - Allow mixing multi and simple geometries in the same layer
 
 ## ToDo
