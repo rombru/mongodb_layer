@@ -33,8 +33,8 @@ def get_geometries_by_feature(feature, geometry_field: str, geometry_field_type:
     elif geometry_field_type == FieldType.ARRAY:
         geometry_field_split = geometry_field.split(".")
         array_in_feature = feature[geometry_field_split[0]]
-        for feature_part in array_in_feature:
-            geometries.append(feature_part[geometry_field_split[1]])
+        for feature_array_elem in array_in_feature:
+            geometries.append(feature_array_elem[geometry_field_split[1]])
 
     return list(filter(None, geometries))
 
@@ -76,19 +76,19 @@ def geometry_to_qgs_geometry(geometry, geometry_type: GeometryType):
 def adapt_geometry_type_by_geometry(geometry, geometry_type: GeometryType):
     coordinates = geometry["coordinates"]
 
-    if type(coordinates[0][0][0]) is list and geometry_type == GeometryType.POLYGON:
+    if geometry_type == GeometryType.POLYGON and type(coordinates[0][0][0]) is list:
         return GeometryType.MULTIPOLYGON
-    if type(coordinates[0][0][0]) is not list and geometry_type == GeometryType.MULTIPOLYGON:
+    if geometry_type == GeometryType.MULTIPOLYGON and type(coordinates[0][0][0]) is not list :
         return GeometryType.POLYGON
 
-    if type(coordinates[0][0]) is list and geometry_type == GeometryType.LINESTRING:
+    if geometry_type == GeometryType.LINESTRING and type(coordinates[0][0]) is list :
         return GeometryType.MULTILINESTRING
-    if type(coordinates[0][0]) is not list and geometry_type == GeometryType.MULTILINESTRING:
+    if geometry_type == GeometryType.MULTILINESTRING and type(coordinates[0][0]) is not list :
         return GeometryType.LINESTRING
 
-    if type(coordinates[0]) is list and geometry_type == GeometryType.POINT:
+    if geometry_type == GeometryType.POINT and type(coordinates[0]) is list :
         return GeometryType.MULTIPOINT
-    if type(coordinates[0]) is not list and geometry_type == GeometryType.MULTIPOINT:
+    if geometry_type == GeometryType.MULTIPOINT and type(coordinates[0]) is not list :
         return GeometryType.POINT
 
     return geometry_type
