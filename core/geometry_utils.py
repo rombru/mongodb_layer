@@ -25,16 +25,24 @@ def get_any_geometry(data: list[object], geometry_field: str, geometry_field_typ
 def get_geometries_by_feature(feature, geometry_field: str, geometry_field_type: FieldType):
     geometries = []
 
+    geometries_or_geometry_lists = []
     if geometry_field_type == FieldType.ROOT:
-        geometries.append(feature[geometry_field])
+        geometries_or_geometry_lists.append(feature[geometry_field])
     elif geometry_field_type == FieldType.OBJECT:
         geometry_field_split = geometry_field.split(".")
-        geometries.append(feature[geometry_field_split[0]][geometry_field_split[1]])
+        geometries_or_geometry_lists.append(feature[geometry_field_split[0]][geometry_field_split[1]])
     elif geometry_field_type == FieldType.ARRAY:
         geometry_field_split = geometry_field.split(".")
         array_in_feature = feature[geometry_field_split[0]]
         for feature_array_elem in array_in_feature:
-            geometries.append(feature_array_elem[geometry_field_split[1]])
+            geometries_or_geometry_lists.append(feature_array_elem[geometry_field_split[1]])
+
+    for elem in geometries_or_geometry_lists:
+        if type(elem) is list:
+            for geometry in elem:
+                geometries.append(geometry)
+        else:
+            geometries.append(elem)
 
     return list(filter(None, geometries))
 
