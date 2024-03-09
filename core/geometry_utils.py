@@ -42,6 +42,8 @@ def get_geometries_by_feature(feature, geometry_field: str, geometry_field_type:
 def geometry_to_qgs_geometry(geometry, geometry_type: GeometryType):
     coordinates = geometry["coordinates"]
 
+    geometry_type = adapt_geometry_type_by_geometry(geometry, geometry_type)
+
     if geometry_type == GeometryType.POINT:
         return QgsGeometry.fromPointXY(
             get_point_from_coord(coordinates)
@@ -70,6 +72,26 @@ def geometry_to_qgs_geometry(geometry, geometry_type: GeometryType):
              for ring in inner_polygon]
             for inner_polygon in coordinates
         ])
+
+def adapt_geometry_type_by_geometry(geometry, geometry_type: GeometryType):
+    coordinates = geometry["coordinates"]
+
+    if type(coordinates[0][0][0]) is list and geometry_type == GeometryType.POLYGON:
+        return GeometryType.MULTIPOLYGON
+    if type(coordinates[0][0][0]) is not list and geometry_type == GeometryType.MULTIPOLYGON:
+        return GeometryType.POLYGON
+
+    if type(coordinates[0][0]) is list and geometry_type == GeometryType.LINESTRING:
+        return GeometryType.MULTILINESTRING
+    if type(coordinates[0][0]) is not list and geometry_type == GeometryType.MULTILINESTRING:
+        return GeometryType.LINESTRING
+
+    if type(coordinates[0]) is list and geometry_type == GeometryType.POINT:
+        return GeometryType.MULTIPOINT
+    if type(coordinates[0]) is not list and geometry_type == GeometryType.MULTIPOINT:
+        return GeometryType.POINT
+
+    return geometry_type
 
 
 def get_point_from_coord(coordinates):
