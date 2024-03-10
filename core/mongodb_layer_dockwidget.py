@@ -33,7 +33,7 @@ from pymongo import MongoClient
 from qgis._core import QgsProject
 import re
 
-from .enums.field_type import FieldType
+from .enums.field_nesting import FieldNesting
 from .get_attribute_aggregation_pipeline import get_attribute_aggregation_pipeline
 from .enums.geometry_format import GeometryFormat
 from .mongodb_layer import MongoDBLayer
@@ -61,7 +61,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     collection: str
     geometry_field: str
     geometry_format: GeometryFormat
-    fields_and_types: Dict[str, FieldType]
+    fields: Dict[str, FieldNesting]
 
     def __init__(self, parent=None):
         """Constructor."""
@@ -126,10 +126,10 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.addLayerButton.setEnabled(False)
 
         self.collection = self.collectionBox.currentText()
-        fields = self.get_fields()
-        self.fields_and_types = self.fields_to_sorted_fields_and_types(fields)
+        raw_fields = self.get_fields()
+        self.fields = self.to_sorted_fields_with_nesting_type(raw_fields)
 
-        self.geometryFieldBox.addItems(self.fields_and_types.keys())
+        self.geometryFieldBox.addItems(self.fields.keys())
         self.geometryFieldBox.setEnabled(True)
 
     def get_fields(self):
@@ -138,11 +138,11 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         fields: [str] = document["keys"] if document is not None else []
         return fields
 
-    def fields_to_sorted_fields_and_types(self, keys):
+    def to_sorted_fields_with_nesting_type(self, keys):
         attribute_types_map = {}
         for key in keys:
             type_key_pair = key.split(":")
-            attribute_types_map[type_key_pair[1]] = FieldType.from_str(type_key_pair[0])
+            attribute_types_map[type_key_pair[1]] = FieldNesting.from_str(type_key_pair[0])
 
         return dict(sorted(attribute_types_map.items()))
 
@@ -168,7 +168,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         json_query = json.loads(self.replace_simple_quote(self.double_quote_json_keys(query)))
         data = list(self.mongo_client[self.db][self.collection].find(json_query).limit(int(limit)))
-        layer = MongoDBLayer(data, self.collection, self.geometry_field, self.fields_and_types, self.geometry_format)
+        layer = MongoDBLayer(data, self.collection, self.geometry_field, self.fields, self.geometry_format)
 
         QgsProject.instance().addMapLayer(layer)
 

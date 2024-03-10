@@ -1,12 +1,12 @@
 from bson import Decimal128
 from qgis._core import QgsGeometry, QgsPointXY
 
-from .enums.field_type import FieldType
+from .enums.field_nesting import FieldNesting
 from .enums.geometry_type import GeometryType
 
 
-def get_geometry_type(data: list[object], geometry_field: str, geometry_field_type: FieldType):
-    geojson_geometry = get_any_geometry(data, geometry_field, geometry_field_type)
+def get_geometry_type(data: list[object], geometry_field: str, geometry_field_nesting: FieldNesting):
+    geojson_geometry = get_any_geometry(data, geometry_field, geometry_field_nesting)
 
     if not geojson_geometry:
         return GeometryType.POINT
@@ -14,24 +14,24 @@ def get_geometry_type(data: list[object], geometry_field: str, geometry_field_ty
         return GeometryType.from_geojson_type(geojson_geometry["type"])
 
 
-def get_any_geometry(data: list[object], geometry_field: str, geometry_field_type: FieldType):
+def get_any_geometry(data: list[object], geometry_field: str, geometry_field_nesting: FieldNesting):
     for feature in data:
-        geometry = get_geometries_by_feature(feature, geometry_field, geometry_field_type)[0]
+        geometry = get_geometries_by_feature(feature, geometry_field, geometry_field_nesting)[0]
         if geometry: return geometry
 
     return None
 
 
-def get_geometries_by_feature(feature, geometry_field: str, geometry_field_type: FieldType):
+def get_geometries_by_feature(feature, geometry_field: str, geometry_field_nesting: FieldNesting):
     geometries = []
 
     geometries_or_geometry_lists = []
-    if geometry_field_type == FieldType.ROOT:
+    if geometry_field_nesting == FieldNesting.ROOT:
         geometries_or_geometry_lists.append(feature[geometry_field])
-    elif geometry_field_type == FieldType.OBJECT:
+    elif geometry_field_nesting == FieldNesting.OBJECT:
         geometry_field_split = geometry_field.split(".")
         geometries_or_geometry_lists.append(feature[geometry_field_split[0]][geometry_field_split[1]])
-    elif geometry_field_type == FieldType.ARRAY:
+    elif geometry_field_nesting == FieldNesting.ARRAY:
         geometry_field_split = geometry_field.split(".")
         array_in_feature = feature[geometry_field_split[0]]
         for feature_array_elem in array_in_feature:
