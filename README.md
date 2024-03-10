@@ -18,4 +18,5 @@ It does require the installation of "pymongo" package for Python.
 - Support other formats of geometry
 - Automatically verify the installation of pymongo
 - Support projection with another CRS
+- Support async loading of a layer
 
