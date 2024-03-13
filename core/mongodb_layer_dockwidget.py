@@ -176,7 +176,9 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         return re.sub('([{,]\s*)([^"\':]+)(\s*:)', "\g<1>\"\g<2>\"\g<3>", json_string)
 
     def replace_simple_quote(self, json_string):
-        return json.dumps(ast.literal_eval(json_string))
+        json_string = re.sub('([{,]\s*)(\')([^\']+)(\')(\s*:)', "\g<1>\"\g<3>\"\g<5>", json_string)
+        json_string = re.sub('(:\s*)(\')([^\']+)(\')([},]\s*)', "\g<1>\"\g<3>\"\g<5>", json_string)
+        return json_string
 
     def closeEvent(self, event):
         self.closingPlugin.emit()
