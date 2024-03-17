@@ -20,5 +20,4 @@ It does require the installation of "pymongo" package for Python.
 - Automatically verify the installation of pymongo
 - Support projection with another CRS
 - Support async loading of a layer
-- Choose an icon
 
