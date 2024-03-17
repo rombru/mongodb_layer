@@ -80,7 +80,7 @@ class MongoDBLayer(QgsVectorLayer):
         qgs_geometry: Union[QgsGeometry, None] = None
 
         for geometry in geometries:
-            next_qgs_geometry = geometry_to_qgs_geometry(geometry, self.geometry_type)
+            next_qgs_geometry = geometry_to_qgs_geometry(geometry)
             if qgs_geometry:
                 qgs_geometry.combine(next_qgs_geometry)
             else:

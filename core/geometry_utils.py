@@ -47,10 +47,10 @@ def get_geometries_by_feature(feature, geometry_field: str, geometry_field_nesti
     return list(filter(None, geometries))
 
 
-def geometry_to_qgs_geometry(geometry, geometry_type: GeometryType):
+def geometry_to_qgs_geometry(geometry):
     coordinates = geometry["coordinates"]
 
-    geometry_type = adapt_geometry_type_by_geometry(geometry, geometry_type)
+    geometry_type = get_geometry_type_by_geometry(geometry)
 
     if geometry_type == GeometryType.POINT:
         return QgsGeometry.fromPointXY(
@@ -81,8 +81,9 @@ def geometry_to_qgs_geometry(geometry, geometry_type: GeometryType):
             for inner_polygon in coordinates
         ])
 
-def adapt_geometry_type_by_geometry(geometry, geometry_type: GeometryType):
+def get_geometry_type_by_geometry(geometry):
     coordinates = geometry["coordinates"]
+    geometry_type = GeometryType.from_geojson_type(geometry["type"])
 
     if geometry_type == GeometryType.POLYGON and type(coordinates[0][0][0]) is list:
         return GeometryType.MULTIPOLYGON
