@@ -2,8 +2,6 @@
 
 This repository contains a plugin which create layers from a MongoDB datasource.
 
-It does require the installation of "pymongo" package for Python.
-
 ## Features
 - Select a database, a collection and a geometry field
 - Import documents as features
@@ -18,6 +16,5 @@ It does require the installation of "pymongo" package for Python.
 
 ## ToDo
 - Support other formats of geometry
-- Automatically verify the installation of pymongo
 - Support projection with another CRS
 
