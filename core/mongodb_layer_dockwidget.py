@@ -21,21 +21,21 @@
  *                                                                         *
  ***************************************************************************/
 """
-import ast
+import asyncio
 import json
 import os
+import re
 from typing import Optional, Dict
 
 from PyQt5.QtWidgets import QPlainTextEdit, QPushButton, QComboBox, QLineEdit
+from pymongo import MongoClient
 from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.QtCore import pyqtSignal
-from pymongo import MongoClient
 from qgis._core import QgsProject
-import re
 
 from .enums.field_nesting import FieldNesting
-from .get_attribute_aggregation_pipeline import get_attribute_aggregation_pipeline
 from .enums.geometry_format import GeometryFormat
+from .get_attribute_aggregation_pipeline import get_attribute_aggregation_pipeline
 from .mongodb_layer import MongoDBLayer
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -44,6 +44,7 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 
 class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     closingPlugin = pyqtSignal()
+    loop: asyncio.AbstractEventLoop
 
     mongo_client: MongoClient
     connectionTextEdit: QPlainTextEdit
@@ -63,7 +64,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     geometry_format: GeometryFormat
     fields: Dict[str, FieldNesting]
 
-    def __init__(self, parent=None):
+    def __init__(self, loop, parent=None):
         """Constructor."""
         super(MongoDBLayerDockWidget, self).__init__(parent)
         # Set up the user interface from Designer.
@@ -71,6 +72,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # self.<objectname>, and you can use autoconnect slots - see
         # http://doc.qt.io/qt-5/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
+        self.loop = loop
         self.setupUi(self)
         self.init_layout()
 
@@ -166,11 +168,16 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         if not limit:
             limit = "1000"
 
+        asyncio.run_coroutine_threadsafe(self.add_layer(query, limit), self.loop)
+
+    async def add_layer(self, query, limit):
         json_query = json.loads(self.replace_simple_quote(self.double_quote_json_keys(query)))
         data = list(self.mongo_client[self.db][self.collection].find(json_query).limit(int(limit)))
-        layer = MongoDBLayer(data, self.collection, self.geometry_field, self.fields, self.geometry_format)
 
+        layer = MongoDBLayer(data, self.collection, self.geometry_field, self.fields, self.geometry_format)
         QgsProject.instance().addMapLayer(layer)
+
+
 
     def double_quote_json_keys(self, json_string):
         return re.sub('([{,]\s*)([^"\':]+)(\s*:)', "\g<1>\"\g<2>\"\g<3>", json_string)

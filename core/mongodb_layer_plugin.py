@@ -21,15 +21,18 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os.path
+
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, Qt
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
-# Initialize Qt resources from file resources.py
-from .resources import *
 
+from . import async_utils
 # Import the code for the DockWidget
 from .mongodb_layer_dockwidget import MongoDBLayerDockWidget
-import os.path
+
+
+# Initialize Qt resources from file resources.py
 
 
 class MongoDBLayerPlugin:
@@ -173,6 +176,7 @@ class MongoDBLayerPlugin:
             text=self.tr(u'Add MongoDB Layer'),
             callback=self.run,
             parent=self.iface.mainWindow())
+        self.loop = async_utils.create_loop()
 
     #--------------------------------------------------------------------------
 
@@ -197,6 +201,7 @@ class MongoDBLayerPlugin:
         """Removes the plugin menu item and icon from QGIS GUI."""
 
         #print "** UNLOAD MongoDBLayerPlugin"
+        async_utils.stop_loop(self.loop)
 
         for action in self.actions:
             self.iface.removePluginMenu(
@@ -221,7 +226,7 @@ class MongoDBLayerPlugin:
             #    removed on close (see self.onClosePlugin method)
             if self.dockwidget == None:
                 # Create the dockwidget (after translation) and keep reference
-                self.dockwidget = MongoDBLayerDockWidget()
+                self.dockwidget = MongoDBLayerDockWidget(self.loop)
 
             # connect to provide cleanup on closing of dockwidget
             self.dockwidget.closingPlugin.connect(self.onClosePlugin)
