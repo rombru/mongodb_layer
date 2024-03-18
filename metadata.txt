@@ -6,13 +6,18 @@
 name=MongoDB Layer
 qgisMinimumVersion=3.0
 description=This plugin gives the possibility to create a layer from MongoDB datasource
-version=0.0.1
+version=1.0.0
 author=Romain Bruyère
 email=rom.bruyere@gmail.com
 
-about=This plugin gives the possibility to create a layer from a MongoDB datasource.
-      It does require the installation of "pymongo" package for Python.
-      It has filtering and limit capabilities, helping the user to read a subset of documents.
+about=  The QGIS MongoDB Layer plugin facilitates seamless integration between QGIS
+        and MongoDB databases, enabling users to create layers directly from MongoDB datasources with ease.
+        Users can select databases, collections, and geometry fields effortlessly,
+        import documents as features, and apply filters for dataset refinement.
+        The plugin supports various geometry types, intelligently handles nested geometries,
+        and allows retrieval of a mix of multi and simple geometries from the same collection.
+        Asynchronous loading ensures faster layer loading times, enhancing productivity and
+        efficiency in spatial data analysis workflows.
 
 tracker=https://github.com/rombru/mongodb_layer/issues
 repository=https://github.com/rombru/mongodb_layer
@@ -22,18 +27,25 @@ repository=https://github.com/rombru/mongodb_layer
 
 hasProcessingProvider=no
 changelog=
-    Version 0.0.1
-    - Add Point support
-    - Add LineString support
-    - Filtering documents
+    Version 1.0.0
+    - Select a database, a collection and a geometry field
+    - Import documents as features
+    - Filter imported documents
     - Limit the number of documents
+    - Assign the document attributes to each feature
+    - Support several geometry types (point, linestring, polygon, multipoint, multilinestring and multipolygon)
+    - The selected geometry field can be at root level, nested in an object, nested in an array
+    - If the selected geometry field is a list, geometries are combined
+    - Allow getting a mix of multi and simple geometries from the same collection
+    - The layer is loaded asynchronously
 
 # Tags are comma separated with spaces allowed
 tags=python, mongodb, database, layer
 
-homepage=http://homepage
+homepage=https://github.com/rombru/mongodb_layer
 category=Plugins
 icon=icon.png
+
 # experimental flag
 experimental=False
 
