@@ -22,6 +22,7 @@
  ***************************************************************************/
 """
 import os.path
+import sys
 
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, Qt
 from qgis.PyQt.QtGui import QIcon
@@ -74,6 +75,12 @@ class MongoDBLayerPlugin:
 
         self.pluginIsActive = False
         self.dockwidget = None
+
+        # add dependencies
+        self.plugin_dir = os.path.dirname(__file__)
+        self.deps_dir = os.path.join(self.plugin_dir, 'deps')
+        if self.deps_dir not in sys.path:
+            sys.path.append(self.deps_dir)
 
 
     # noinspection PyMethodMayBeStatic

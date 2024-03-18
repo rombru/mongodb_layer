@@ -1,3 +1,4 @@
+import os
 import sys
 
 from PyQt5.QtCore import Qt
@@ -10,6 +11,12 @@ from core.mongodb_layer_dockwidget import MongoDBLayerDockWidget
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+
+        self.plugin_dir = os.path.dirname(__file__)
+        self.deps_dir = os.path.join(self.plugin_dir, 'core', 'deps')
+        if self.deps_dir not in sys.path:
+            sys.path.append(self.deps_dir)
+
         self.loop = async_utils.create_loop()
         self.resize(400, 600)
         self.addDockWidget(Qt.RightDockWidgetArea, MongoDBLayerDockWidget(self.loop))

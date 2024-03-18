@@ -2,7 +2,7 @@ import uuid
 from typing import Dict, Union
 
 from PyQt5.QtCore import QVariant
-from qgis._core import QgsVectorLayer, QgsFeature, QgsGeometry, QgsField, QgsDefaultValue, QgsFields
+from qgis._core import QgsVectorLayer, QgsFeature, QgsGeometry, QgsField, QgsFields
 
 from .enums.field_nesting import FieldNesting
 from .enums.geometry_format import GeometryFormat

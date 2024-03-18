@@ -1,4 +1,3 @@
-from bson import Decimal128
 from qgis._core import QgsGeometry, QgsPointXY
 
 from .enums.field_nesting import FieldNesting
@@ -109,6 +108,8 @@ def get_point_from_coord(coordinates):
 
 
 def get_number_as_float(num) -> float:
+    from bson import Decimal128
+
     if isinstance(num, Decimal128):
         return float(num.to_decimal())
     else:

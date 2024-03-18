@@ -28,7 +28,6 @@ import re
 from typing import Optional, Dict
 
 from PyQt5.QtWidgets import QPlainTextEdit, QPushButton, QComboBox, QLineEdit
-from pymongo import MongoClient
 from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis._core import QgsProject
@@ -46,7 +45,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     closingPlugin = pyqtSignal()
     loop: asyncio.AbstractEventLoop
 
-    mongo_client: MongoClient
+    mongo_client: object
     connectionTextEdit: QPlainTextEdit
     connectionButton: QPushButton
     databaseBox: QComboBox
@@ -98,6 +97,8 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.addLayerButton.setEnabled(False)
 
         self.connection_string = self.connectionTextEdit.toPlainText()
+
+        from pymongo import MongoClient
         self.mongo_client = MongoClient(self.connection_string, serverSelectionTimeoutMS=2000)
 
         dbs = self.mongo_client.list_database_names()
