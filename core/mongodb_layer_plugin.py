@@ -67,7 +67,6 @@ class MongoDBLayerPlugin:
         # Declare instance attributes
         self.actions = []
         self.menu = self.tr(u'&MongoDB Layer')
-        # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'MongoDBLayer')
         self.toolbar.setObjectName(u'MongoDBLayer')
 
@@ -232,6 +231,5 @@ class MongoDBLayerPlugin:
             self.dockwidget.closingPlugin.connect(self.onClosePlugin)
 
             # show the dockwidget
-            # TODO: fix to allow choice of dock location
             self.iface.addDockWidget(Qt.LeftDockWidgetArea, self.dockwidget)
             self.dockwidget.show()
