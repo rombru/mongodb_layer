@@ -98,7 +98,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         self.connection_string = self.connectionTextEdit.toPlainText()
 
-        from pymongo import MongoClient
+        from pymongo import MongoClient # noqa
         self.mongo_client = MongoClient(self.connection_string, serverSelectionTimeoutMS=2000)
 
         dbs = self.mongo_client.list_database_names()

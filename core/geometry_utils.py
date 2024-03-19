@@ -108,7 +108,7 @@ def get_point_from_coord(coordinates):
 
 
 def get_number_as_float(num) -> float:
-    from bson import Decimal128
+    from bson import Decimal128 # noqa
 
     if isinstance(num, Decimal128):
         return float(num.to_decimal())
