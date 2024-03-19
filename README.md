@@ -18,3 +18,6 @@ This repository contains a plugin which create layers from a MongoDB datasource.
 - Support other formats of geometry
 - Support projection with another CRS
 
+## Commands
+- Release: `git archive --format=zip --output mongodb_layer.zip HEAD`
+- Compile resources: `pyrcc5 -o resources.py resources.qrc`
