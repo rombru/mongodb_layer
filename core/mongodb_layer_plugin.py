@@ -31,9 +31,9 @@ from qgis.PyQt.QtWidgets import QAction
 from . import async_utils
 # Import the code for the DockWidget
 from .mongodb_layer_dockwidget import MongoDBLayerDockWidget
-
-
 # Initialize Qt resources from file resources.py
+# noinspection PyUnresolvedReferences
+from .resources import *
 
 
 class MongoDBLayerPlugin:
@@ -68,8 +68,6 @@ class MongoDBLayerPlugin:
         # Declare instance attributes
         self.actions = []
         self.menu = self.tr(u'&MongoDB Layer')
-        self.toolbar = self.iface.addToolBar(u'MongoDBLayer')
-        self.toolbar.setObjectName(u'MongoDBLayer')
 
         #print "** INITIALIZING MongoDBLayerPlugin"
 
@@ -161,7 +159,7 @@ class MongoDBLayerPlugin:
             action.setWhatsThis(whats_this)
 
         if add_to_toolbar:
-            self.toolbar.addAction(action)
+            self.iface.addToolBarIcon(action)
 
         if add_to_menu:
             self.iface.addPluginToMenu(
@@ -214,8 +212,6 @@ class MongoDBLayerPlugin:
                 self.tr(u'&MongoDB Layer'),
                 action)
             self.iface.removeToolBarIcon(action)
-        # remove the toolbar
-        del self.toolbar
 
     #--------------------------------------------------------------------------
 
