@@ -1,16 +1,19 @@
 from qgis._core import QgsGeometry, QgsPointXY
 
 from .enums.field_nesting import FieldNesting
+from .enums.geometry_format import GeometryFormat
 from .enums.geometry_type import GeometryType
 
 
-def get_geometry_type(data: list[object], geometry_field: str, geometry_field_nesting: FieldNesting):
-    geojson_geometry = get_any_geometry(data, geometry_field, geometry_field_nesting)
+def get_geometry_type(data: list[object], geometry_field: str, geometry_field_nesting: FieldNesting, geometry_format: GeometryFormat):
+    raw_geometry = get_any_geometry(data, geometry_field, geometry_field_nesting)
 
-    if not geojson_geometry:
+    if not raw_geometry:
         return GeometryType.POINT
+    elif geometry_format == GeometryFormat.GEOJSON:
+        return GeometryType.from_geojson_type(raw_geometry["type"])
     else:
-        return GeometryType.from_geojson_type(geojson_geometry["type"])
+        return GeometryType.from_wkt(raw_geometry)
 
 
 def get_any_geometry(data: list[object], geometry_field: str, geometry_field_nesting: FieldNesting):
@@ -46,7 +49,13 @@ def get_geometries_by_feature(feature, geometry_field: str, geometry_field_nesti
     return list(filter(None, geometries))
 
 
-def geometry_to_qgs_geometry(geometry):
+def geometry_to_qgs_geometry(geometry, geometry_format: GeometryFormat):
+    if geometry_format == GeometryFormat.WKT:
+        return QgsGeometry.fromWkt(geometry)
+    else:
+        return geojson_geometry_to_qgs_geometry(geometry)
+
+def geojson_geometry_to_qgs_geometry(geometry):
     coordinates = geometry["coordinates"]
 
     geometry_type = get_geometry_type_by_geometry(geometry)

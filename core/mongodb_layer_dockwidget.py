@@ -83,7 +83,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.geometryFormatBox.activated[str].connect(self.geometry_format_box_change)
         self.addLayerButton.clicked.connect(self.add_layer_button_clicked)
 
-        self.geometryFormatBox.addItems([GeometryFormat.GEOJSON.value])
+        self.geometryFormatBox.addItems([GeometryFormat.GEOJSON.value, GeometryFormat.WKT.value])
 
     def connection_button_clicked(self):
         self.databaseBox.setEnabled(False)

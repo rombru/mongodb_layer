@@ -2,6 +2,7 @@ import uuid
 from typing import Dict, Union
 
 from PyQt5.QtCore import QVariant
+from osgeo import ogr
 from qgis._core import QgsVectorLayer, QgsFeature, QgsGeometry, QgsField, QgsFields
 
 from .enums.field_nesting import FieldNesting
@@ -25,8 +26,9 @@ class MongoDBLayer(QgsVectorLayer):
         self.data = data
         self.collection = collection
         self.geometry_field = geometry_field
+        self.geometry_format = geometry_format
         self.geometry_field_nesting = fields[geometry_field]
-        self.geometry_type = get_geometry_type(data, self.geometry_field, self.geometry_field_nesting)
+        self.geometry_type = get_geometry_type(data, self.geometry_field, self.geometry_field_nesting, geometry_format)
 
         super(MongoDBLayer, self). \
             __init__(self.geometry_type.value,
@@ -80,7 +82,7 @@ class MongoDBLayer(QgsVectorLayer):
         qgs_geometry: Union[QgsGeometry, None] = None
 
         for geometry in geometries:
-            next_qgs_geometry = geometry_to_qgs_geometry(geometry)
+            next_qgs_geometry = geometry_to_qgs_geometry(geometry, self.geometry_format)
             if qgs_geometry:
                 qgs_geometry.combine(next_qgs_geometry)
             else:
