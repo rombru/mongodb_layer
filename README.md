@@ -9,13 +9,13 @@ This repository contains a plugin which create layers from a MongoDB datasource.
 - Limit the number of documents
 - Assign the document attributes to each feature
 - Support several geometry types (point, linestring, polygon, multipoint, multilinestring and multipolygon)
+- Support several format of geometries (GeoJSON, WKT)
 - The selected geometry field can be at root level, nested in an object, nested in an array
 - If the selected geometry field is a list, geometries are combined
 - Allow getting a mix of multi and simple geometries from the same collection 
 - The layer is loaded asynchronously
 
 ## ToDo
-- Support other formats of geometry
 - Support projection with another CRS
 
 ## Commands

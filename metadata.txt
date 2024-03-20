@@ -14,7 +14,7 @@ about=  The QGIS MongoDB Layer plugin facilitates seamless integration between Q
         and MongoDB databases, enabling users to create layers directly from MongoDB datasources with ease.
         Users can select databases, collections, and geometry fields effortlessly,
         import documents as features, and apply filters for dataset refinement.
-        The plugin supports various geometry types, intelligently handles nested geometries,
+        The plugin supports various geometry types and formats, intelligently handles nested geometries,
         and allows retrieval of a mix of multi and simple geometries from the same collection.
         Asynchronous loading ensures faster layer loading times, enhancing productivity and
         efficiency in spatial data analysis workflows.
@@ -27,6 +27,8 @@ repository=https://github.com/rombru/mongodb_layer
 
 hasProcessingProvider=no
 changelog=
+    Version 1.1.0
+    - Support several format of geometries (GeoJSON, WKT)
     Version 1.0.0
     - Select a database, a collection and a geometry field
     - Import documents as features
