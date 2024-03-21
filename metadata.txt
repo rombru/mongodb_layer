@@ -19,6 +19,8 @@ about=  The QGIS MongoDB Layer plugin facilitates seamless integration between Q
         Asynchronous loading ensures faster layer loading times, enhancing productivity and
         efficiency in spatial data analysis workflows.
 
+        If there is any problem, don't hesitate to report and/or contribute for bugs or missing features.
+
 tracker=https://github.com/rombru/mongodb_layer/issues
 repository=https://github.com/rombru/mongodb_layer
 # End of mandatory metadata
@@ -29,6 +31,7 @@ hasProcessingProvider=no
 changelog=
     Version 1.1.0
     - Support several format of geometries (GeoJSON, WKT)
+    - Support multiple coordinate systems
     Version 1.0.0
     - Select a database, a collection and a geometry field
     - Import documents as features

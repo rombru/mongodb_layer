@@ -7,6 +7,7 @@ This repository contains a plugin which create layers from a MongoDB datasource.
 - Import documents as features
 - Filter imported documents
 - Limit the number of documents
+- Choose the coordinate system
 - Assign the document attributes to each feature
 - Support several geometry types (point, linestring, polygon, multipoint, multilinestring and multipolygon)
 - Support several format of geometries (GeoJSON, WKT)
@@ -16,7 +17,7 @@ This repository contains a plugin which create layers from a MongoDB datasource.
 - The layer is loaded asynchronously
 
 ## ToDo
-- Support projection with another CRS
+- ...
 
 ## Commands
 - Release: `git archive --prefix mongodb_layer/ --format=zip --output mongodb_layer.zip HEAD`
