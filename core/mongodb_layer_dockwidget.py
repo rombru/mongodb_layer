@@ -54,6 +54,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     geometryFormatBox: QComboBox
     queryTextEdit: QPlainTextEdit
     limitEdit: QLineEdit
+    epsgEdit: QLineEdit
     addLayerButton: QPushButton
 
     connection_string: str
@@ -169,13 +170,17 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         if not limit:
             limit = "1000"
 
-        asyncio.run_coroutine_threadsafe(self.add_layer(query, limit), self.loop)
+        epsg = self.epsgEdit.text()
+        if not epsg:
+            epsg = "4326"
 
-    async def add_layer(self, query, limit):
+        asyncio.run_coroutine_threadsafe(self.add_layer(query, limit, epsg), self.loop)
+
+    async def add_layer(self, query, limit, epsg):
         json_query = json.loads(self.replace_simple_quote(self.double_quote_json_keys(query)))
         data = list(self.mongo_client[self.db][self.collection].find(json_query).limit(int(limit)))
 
-        layer = MongoDBLayer(data, self.collection, self.geometry_field, self.fields, self.geometry_format)
+        layer = MongoDBLayer(data, self.collection, self.geometry_field, self.fields, self.geometry_format, epsg)
         QgsProject.instance().addMapLayer(layer)
 
 

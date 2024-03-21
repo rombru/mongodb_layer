@@ -21,7 +21,7 @@ class MongoDBLayer(QgsVectorLayer):
     qgs_fields: QgsFields
 
     def __init__(self, data: list[dict], collection: str, geometry_field: str, fields: Dict[str, FieldNesting],
-                 geometry_format: GeometryFormat):
+                 geometry_format: GeometryFormat, epsg: str):
 
         self.data = data
         self.collection = collection
@@ -31,7 +31,7 @@ class MongoDBLayer(QgsVectorLayer):
         self.geometry_type = get_geometry_type(data, self.geometry_field, self.geometry_field_nesting, geometry_format)
 
         super(MongoDBLayer, self). \
-            __init__(self.geometry_type.value,
+            __init__(self.geometry_type.value + "?crs=epsg:" + epsg,
                      collection + '-' + str(uuid.uuid4())[0:4],
                      "memory")
 
