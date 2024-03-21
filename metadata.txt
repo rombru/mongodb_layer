@@ -6,7 +6,7 @@
 name=MongoDB Layer
 qgisMinimumVersion=3.0
 description=This plugin gives the possibility to create a layer from MongoDB datasource
-version=1.0.0
+version=1.1.0
 author=Romain Bruyère
 email=rom.bruyere@gmail.com
 
