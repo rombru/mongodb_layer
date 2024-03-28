@@ -171,8 +171,6 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             limit = "1000"
 
         epsg = self.epsgEdit.text()
-        if not epsg:
-            epsg = "4326"
 
         asyncio.run_coroutine_threadsafe(self.add_layer(query, limit, epsg), self.loop)
 

@@ -179,7 +179,7 @@
           <locale language="C" country="AnyCountry"/>
          </property>
          <property name="placeholderText">
-          <string>Epsg (default: 4326)</string>
+          <string>EPSG</string>
          </property>
         </widget>
        </item>

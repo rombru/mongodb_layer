@@ -31,15 +31,19 @@ class MongoDBLayer(QgsVectorLayer):
         self.geometry_type = get_geometry_type(data, self.geometry_field, self.geometry_field_nesting, geometry_format)
 
         super(MongoDBLayer, self). \
-            __init__(self.geometry_type.value + "?crs=epsg:" + epsg,
-                     collection + '-' + str(uuid.uuid4())[0:4],
-                     "memory")
+            __init__(self.get_uri(self.geometry_type, epsg), collection + '-' + str(uuid.uuid4())[0:4],"memory")
 
         self.startEditing()
         self.qgs_fields = self.get_qgs_fields(data, fields)
         self.add_qgs_fields_to_layer(self.qgs_fields)
         self.add_mongo_db_features(data, self.qgs_fields)
         self.commitChanges()
+
+    def get_uri(self, geometry_type, epsg):
+        if not epsg:
+            return geometry_type.value
+        else:
+            return geometry_type.value + "?crs=epsg:" + epsg
 
     def get_qgs_fields(self, data, fields):
         qgs_fields = QgsFields()
