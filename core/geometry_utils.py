@@ -5,7 +5,7 @@ from .enums.geometry_format import GeometryFormat
 from .enums.geometry_type import GeometryType
 
 
-def get_geometry_type(data: list[object], geometry_field: str, geometry_field_nesting: FieldNesting,
+def get_geometry_type(data: list[dict], geometry_field: str, geometry_field_nesting: FieldNesting,
                       geometry_format: GeometryFormat):
     raw_geometry = get_any_geometry(data, geometry_field, geometry_field_nesting)
 
@@ -17,7 +17,7 @@ def get_geometry_type(data: list[object], geometry_field: str, geometry_field_ne
         return GeometryType.from_wkt(raw_geometry)
 
 
-def get_any_geometry(data: list[object], geometry_field: str, geometry_field_nesting: FieldNesting):
+def get_any_geometry(data: list[dict], geometry_field: str, geometry_field_nesting: FieldNesting):
     for feature in data:
         geometries = get_geometries_by_feature(feature, geometry_field, geometry_field_nesting)
         if geometries and len(geometries) > 0: return geometries[0]
