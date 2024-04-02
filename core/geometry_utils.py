@@ -5,7 +5,8 @@ from .enums.geometry_format import GeometryFormat
 from .enums.geometry_type import GeometryType
 
 
-def get_geometry_type(data: list[object], geometry_field: str, geometry_field_nesting: FieldNesting, geometry_format: GeometryFormat):
+def get_geometry_type(data: list[object], geometry_field: str, geometry_field_nesting: FieldNesting,
+                      geometry_format: GeometryFormat):
     raw_geometry = get_any_geometry(data, geometry_field, geometry_field_nesting)
 
     if not raw_geometry:
@@ -18,26 +19,34 @@ def get_geometry_type(data: list[object], geometry_field: str, geometry_field_ne
 
 def get_any_geometry(data: list[object], geometry_field: str, geometry_field_nesting: FieldNesting):
     for feature in data:
-        geometry = get_geometries_by_feature(feature, geometry_field, geometry_field_nesting)[0]
-        if geometry: return geometry
+        geometries = get_geometries_by_feature(feature, geometry_field, geometry_field_nesting)
+        if geometries and len(geometries) > 0: return geometries[0]
 
     return None
 
 
-def get_geometries_by_feature(feature, geometry_field: str, geometry_field_nesting: FieldNesting):
+def get_geometries_by_feature(feature: dict, geometry_field: str, geometry_field_nesting: FieldNesting):
     geometries = []
 
     geometries_or_geometry_lists = []
     if geometry_field_nesting == FieldNesting.ROOT:
-        geometries_or_geometry_lists.append(feature[geometry_field])
+        root = feature.get(geometry_field)
+        if root:
+            geometries_or_geometry_lists.append(root)
     elif geometry_field_nesting == FieldNesting.OBJECT:
         geometry_field_split = geometry_field.split(".")
-        geometries_or_geometry_lists.append(feature[geometry_field_split[0]][geometry_field_split[1]])
+        root = feature.get(geometry_field_split[0])
+        nested = root.get(geometry_field_split[1])
+        if nested:
+            geometries_or_geometry_lists.append(nested)
     elif geometry_field_nesting == FieldNesting.ARRAY:
         geometry_field_split = geometry_field.split(".")
-        array_in_feature = feature[geometry_field_split[0]]
-        for feature_array_elem in array_in_feature:
-            geometries_or_geometry_lists.append(feature_array_elem[geometry_field_split[1]])
+        root_array = feature.get(geometry_field_split[0])
+        if root_array:
+            for feature_array_elem in root_array:
+                nested = feature_array_elem.get(geometry_field_split[1])
+                if nested:
+                    geometries_or_geometry_lists.append(nested)
 
     for elem in geometries_or_geometry_lists:
         if type(elem) is list:
@@ -54,6 +63,7 @@ def geometry_to_qgs_geometry(geometry, geometry_format: GeometryFormat):
         return QgsGeometry.fromWkt(geometry)
     else:
         return geojson_geometry_to_qgs_geometry(geometry)
+
 
 def geojson_geometry_to_qgs_geometry(geometry):
     coordinates = geometry["coordinates"]
@@ -89,23 +99,24 @@ def geojson_geometry_to_qgs_geometry(geometry):
             for inner_polygon in coordinates
         ])
 
+
 def get_geometry_type_by_geometry(geometry):
     coordinates = geometry["coordinates"]
     geometry_type = GeometryType.from_geojson_type(geometry["type"])
 
     if geometry_type == GeometryType.POLYGON and type(coordinates[0][0][0]) is list:
         return GeometryType.MULTIPOLYGON
-    if geometry_type == GeometryType.MULTIPOLYGON and type(coordinates[0][0][0]) is not list :
+    if geometry_type == GeometryType.MULTIPOLYGON and type(coordinates[0][0][0]) is not list:
         return GeometryType.POLYGON
 
-    if geometry_type == GeometryType.LINESTRING and type(coordinates[0][0]) is list :
+    if geometry_type == GeometryType.LINESTRING and type(coordinates[0][0]) is list:
         return GeometryType.MULTILINESTRING
-    if geometry_type == GeometryType.MULTILINESTRING and type(coordinates[0][0]) is not list :
+    if geometry_type == GeometryType.MULTILINESTRING and type(coordinates[0][0]) is not list:
         return GeometryType.LINESTRING
 
-    if geometry_type == GeometryType.POINT and type(coordinates[0]) is list :
+    if geometry_type == GeometryType.POINT and type(coordinates[0]) is list:
         return GeometryType.MULTIPOINT
-    if geometry_type == GeometryType.MULTIPOINT and type(coordinates[0]) is not list :
+    if geometry_type == GeometryType.MULTIPOINT and type(coordinates[0]) is not list:
         return GeometryType.POINT
 
     return geometry_type
@@ -117,7 +128,7 @@ def get_point_from_coord(coordinates):
 
 
 def get_number_as_float(num) -> float:
-    from bson import Decimal128 # noqa
+    from bson import Decimal128  # noqa
 
     if isinstance(num, Decimal128):
         return float(num.to_decimal())

@@ -2,7 +2,6 @@ import uuid
 from typing import Dict, Union
 
 from PyQt5.QtCore import QVariant
-from osgeo import ogr
 from qgis._core import QgsVectorLayer, QgsFeature, QgsGeometry, QgsField, QgsFields
 
 from .enums.field_nesting import FieldNesting
@@ -58,18 +57,20 @@ class MongoDBLayer(QgsVectorLayer):
             self.addAttribute(qgs_field)
 
     def add_mongo_db_features(self, data: list[dict], qgs_fields: QgsFields):
+        i = 0
         for feature in data:
             qgs_feature = QgsFeature()
             qgs_feature.setGeometry(self.create_qgs_geometry(feature, self.geometry_field, self.geometry_field_nesting))
             qgs_feature.setFields(qgs_fields)
             qgs_feature.setAttributes(self.create_attributes(feature, qgs_fields))
             self.addFeature(qgs_feature)
+            i = i+1
 
     def create_attributes(self, feature: dict, qgs_fields: QgsFields):
         attributes = []
 
         for qgs_field in qgs_fields.toList():
-            value = feature[qgs_field.name()]
+            value = feature.get(qgs_field.name())
             if value:
                 attributes.append(self.create_attribute(value, qgs_field))
 
