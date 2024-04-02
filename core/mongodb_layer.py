@@ -73,6 +73,8 @@ class MongoDBLayer(QgsVectorLayer):
             value = feature.get(qgs_field.name())
             if value:
                 attributes.append(self.create_attribute(value, qgs_field))
+            else:
+                attributes.append(None)
 
         return attributes
 
