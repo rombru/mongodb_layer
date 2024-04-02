@@ -25,12 +25,13 @@ import asyncio
 import json
 import os
 import re
+import traceback
 from typing import Optional, Dict
 
 from PyQt5.QtWidgets import QPlainTextEdit, QPushButton, QComboBox, QLineEdit
 from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.QtCore import pyqtSignal
-from qgis._core import QgsProject
+from qgis._core import QgsProject, QgsMessageLog, Qgis
 
 from .enums.field_nesting import FieldNesting
 from .enums.geometry_format import GeometryFormat
@@ -99,7 +100,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         self.connection_string = self.connectionTextEdit.toPlainText()
 
-        from pymongo import MongoClient # noqa
+        from pymongo import MongoClient  # noqa
         self.mongo_client = MongoClient(self.connection_string, serverSelectionTimeoutMS=2000)
 
         dbs = self.mongo_client.list_database_names()
@@ -150,7 +151,6 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         return dict(sorted(attribute_types_map.items()))
 
-
     def geometry_field_box_change(self):
         self.geometry_field = self.geometryFieldBox.currentText()
         self.geometryFormatBox.setEnabled(True)
@@ -163,7 +163,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
     def add_layer_button_clicked(self):
         query = self.queryTextEdit.toPlainText()
-        if not query :
+        if not query:
             query = "{}"
 
         limit = self.limitEdit.text()
@@ -172,7 +172,15 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         epsg = self.epsgEdit.text()
 
-        asyncio.run_coroutine_threadsafe(self.add_layer(query, limit, epsg), self.loop)
+        fut = asyncio.run_coroutine_threadsafe(self.add_layer(query, limit, epsg), self.loop)
+        try:
+            fut.result()
+        except:
+            e = fut.exception()
+            tb = traceback.format_exc()
+            print("exception: ", tb)
+            QgsMessageLog.logMessage(tb, level=Qgis.Critical)
+            QgsMessageLog.logMessage('{}: {}'.format(type(e).__name__, e), level=Qgis.Critical)
 
     async def add_layer(self, query, limit, epsg):
         json_query = json.loads(self.replace_simple_quote(self.double_quote_json_keys(query)))
@@ -180,8 +188,6 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         layer = MongoDBLayer(data, self.collection, self.geometry_field, self.fields, self.geometry_format, epsg)
         QgsProject.instance().addMapLayer(layer)
-
-
 
     def double_quote_json_keys(self, json_string):
         return re.sub('([{,]\s*)([^"\':]+)(\s*:)', "\g<1>\"\g<2>\"\g<3>", json_string)
