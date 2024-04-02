@@ -29,6 +29,8 @@ repository=https://github.com/rombru/mongodb_layer
 
 hasProcessingProvider=no
 changelog=
+    Version 1.1.1
+    - Fix layer loading when some fields are missing
     Version 1.1.0
     - Support several format of geometries (GeoJSON, WKT)
     - Support multiple coordinate systems
