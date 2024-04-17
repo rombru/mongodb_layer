@@ -32,6 +32,7 @@ from PyQt5.QtWidgets import QPlainTextEdit, QPushButton, QComboBox, QLineEdit
 from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis._core import QgsProject, QgsMessageLog, Qgis
+from qgis.utils import iface
 
 from .enums.field_nesting import FieldNesting
 from .enums.geometry_format import GeometryFormat
@@ -178,7 +179,12 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         fut = asyncio.run_coroutine_threadsafe(self.add_layer(query, limit, epsg), self.loop)
         try:
-            fut.result()
+            limit_exceeded = fut.result()
+            if limit_exceeded:
+                iface.messageBar().pushMessage(
+                    "Warning",
+                    "The set of loaded geometries has been limited to "+limit+", but more are available.",
+                    level=Qgis.Warning)
         except:
             e = fut.exception()
             tb = traceback.format_exc()
@@ -188,11 +194,18 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
     async def add_layer(self, query, limit, epsg):
         json_query = json.loads(self.replace_simple_quote(self.double_quote_json_keys(query)))
-        data = list(self.mongo_client[self.db][self.collection].find(json_query).limit(int(limit)))
+        data = list(self.mongo_client[self.db][self.collection].find(json_query).limit(int(limit)+1))
+        limit_exceeded = False
+
+        if len(data) == int(limit)+1:
+            data.pop()
+            limit_exceeded = True
 
         layer = MongoDBLayer(data, self.collection, self.geometry_field, self.fields, self.geometry_format, epsg)
         QgsProject.instance().addMapLayer(layer, False)
         QgsProject.instance().layerTreeRoot().insertLayer(0, layer)
+
+        return limit_exceeded
 
     def double_quote_json_keys(self, json_string):
         return re.sub('([{,]\s*)([^"\':]+)(\s*:)', "\g<1>\"\g<2>\"\g<3>", json_string)
