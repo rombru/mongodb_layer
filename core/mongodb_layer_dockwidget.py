@@ -187,7 +187,8 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         data = list(self.mongo_client[self.db][self.collection].find(json_query).limit(int(limit)))
 
         layer = MongoDBLayer(data, self.collection, self.geometry_field, self.fields, self.geometry_format, epsg)
-        QgsProject.instance().addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer, False)
+        QgsProject.instance().layerTreeRoot().insertLayer(0, layer)
 
     def double_quote_json_keys(self, json_string):
         return re.sub('([{,]\s*)([^"\':]+)(\s*:)', "\g<1>\"\g<2>\"\g<3>", json_string)
