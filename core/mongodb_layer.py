@@ -1,5 +1,5 @@
 import uuid
-from typing import Dict, Union
+from typing import Dict, Union, List
 
 from PyQt5.QtCore import QVariant
 from qgis._core import QgsVectorLayer, QgsFeature, QgsGeometry, QgsField, QgsFields
@@ -12,14 +12,14 @@ from .geometry_utils import get_geometry_type, get_geometries_by_feature, geomet
 
 
 class MongoDBLayer(QgsVectorLayer):
-    data: list[dict]
+    data: List[Dict]
     collection: str
     geometry_field: str
     geometry_field_nesting: FieldNesting
     geometry_type: GeometryType
     qgs_fields: QgsFields
 
-    def __init__(self, data: list[dict], collection: str, geometry_field: str, fields: Dict[str, FieldNesting],
+    def __init__(self, data: List[Dict], collection: str, geometry_field: str, fields: Dict[str, FieldNesting],
                  geometry_format: GeometryFormat, epsg: str):
 
         self.data = data
@@ -56,7 +56,7 @@ class MongoDBLayer(QgsVectorLayer):
         for qgs_field in qgs_fields.toList():
             self.addAttribute(qgs_field)
 
-    def add_mongo_db_features(self, data: list[dict], qgs_fields: QgsFields):
+    def add_mongo_db_features(self, data: List[Dict], qgs_fields: QgsFields):
         i = 0
         for feature in data:
             qgs_feature = QgsFeature()
