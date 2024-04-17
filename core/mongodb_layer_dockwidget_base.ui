@@ -38,6 +38,9 @@
         <height>40</height>
        </size>
       </property>
+      <property name="accessibleDescription">
+       <string>Write a connection string</string>
+      </property>
       <property name="locale">
        <locale language="C" country="AnyCountry"/>
       </property>
@@ -53,6 +56,9 @@
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="accessibleDescription">
+       <string>Connect to the server</string>
       </property>
       <property name="locale">
        <locale language="C" country="AnyCountry"/>
@@ -74,16 +80,16 @@
        </sizepolicy>
       </property>
       <property name="toolTip">
-       <string/>
+       <string>Choose a database</string>
+      </property>
+      <property name="accessibleDescription">
+       <string>Choose a database</string>
       </property>
       <property name="locale">
        <locale language="C" country="AnyCountry"/>
       </property>
       <property name="currentText">
        <string/>
-      </property>
-      <property name="placeholderText">
-       <string>Database</string>
       </property>
      </widget>
     </item>
@@ -93,13 +99,13 @@
        <bool>false</bool>
       </property>
       <property name="toolTip">
-       <string/>
+       <string>Choose a collection</string>
+      </property>
+      <property name="accessibleDescription">
+       <string>Choose a collection</string>
       </property>
       <property name="locale">
        <locale language="C" country="AnyCountry"/>
-      </property>
-      <property name="placeholderText">
-       <string>Collection</string>
       </property>
      </widget>
     </item>
@@ -108,11 +114,14 @@
       <property name="enabled">
        <bool>false</bool>
       </property>
+      <property name="toolTip">
+       <string>Choose a geometry field</string>
+      </property>
+      <property name="accessibleDescription">
+       <string>Choose a geometry field</string>
+      </property>
       <property name="locale">
        <locale language="C" country="AnyCountry"/>
-      </property>
-      <property name="placeholderText">
-       <string>Geometry field</string>
       </property>
      </widget>
     </item>
@@ -121,8 +130,11 @@
       <property name="enabled">
        <bool>false</bool>
       </property>
-      <property name="placeholderText">
-       <string>Geometry format</string>
+      <property name="toolTip">
+       <string>Choose a geometry format</string>
+      </property>
+      <property name="accessibleDescription">
+       <string>Choose a geometry format</string>
       </property>
      </widget>
     </item>
@@ -134,8 +146,8 @@
         <height>20</height>
        </size>
       </property>
-      <property name="toolTip">
-       <string/>
+      <property name="accessibleDescription">
+       <string>Add an optional mongodb query</string>
       </property>
       <property name="locale">
        <locale language="C" country="AnyCountry"/>
@@ -174,6 +186,9 @@
        </property>
        <item>
         <widget class="QLineEdit" name="limitEdit">
+         <property name="accessibleDescription">
+          <string>Add an optional limit</string>
+         </property>
          <property name="locale">
           <locale language="C" country="AnyCountry"/>
          </property>
@@ -184,6 +199,9 @@
        </item>
        <item>
         <widget class="QLineEdit" name="epsgEdit">
+         <property name="accessibleDescription">
+          <string>Add an optional EPSG</string>
+         </property>
          <property name="locale">
           <locale language="C" country="AnyCountry"/>
          </property>
@@ -199,6 +217,9 @@
      <widget class="QPushButton" name="addLayerButton">
       <property name="enabled">
        <bool>false</bool>
+      </property>
+      <property name="accessibleDescription">
+       <string>Click to load the layer</string>
       </property>
       <property name="text">
        <string>Add layer</string>
