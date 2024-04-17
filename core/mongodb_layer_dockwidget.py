@@ -86,6 +86,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.addLayerButton.clicked.connect(self.add_layer_button_clicked)
 
         self.geometryFormatBox.addItems([GeometryFormat.GEOJSON.value, GeometryFormat.WKT.value])
+        self.geometryFormatBox.setCurrentIndex(-1)
 
     def connection_button_clicked(self):
         self.databaseBox.setEnabled(False)
@@ -106,6 +107,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         dbs = self.mongo_client.list_database_names()
         if dbs:
             self.databaseBox.addItems(dbs)
+            self.databaseBox.setCurrentIndex(-1)
             self.databaseBox.setEnabled(True)
 
     def database_box_change(self):
@@ -121,6 +123,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         collections = self.mongo_client[self.db].list_collection_names()
         if collections:
             self.collectionBox.addItems(collections)
+            self.collectionBox.setCurrentIndex(-1)
             self.collectionBox.setEnabled(True)
 
     def collection_box_change(self):
@@ -135,6 +138,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.fields = self.to_sorted_fields_with_nesting_type(raw_fields)
 
         self.geometryFieldBox.addItems(self.fields.keys())
+        self.geometryFieldBox.setCurrentIndex(-1)
         self.geometryFieldBox.setEnabled(True)
 
     def get_fields(self):
