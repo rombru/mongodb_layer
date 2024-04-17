@@ -21,7 +21,7 @@ This repository contains a plugin which create layers from a MongoDB datasource.
 - The layer is loaded asynchronously
 
 ## ToDo
-- Test the plugin with other QGIS / Python versions
+- ...
 
 ## Commands
 - Release: `git archive --prefix mongodb_layer/ --format=zip --output mongodb_layer.zip HEAD`
