@@ -9,14 +9,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>240</width>
+    <width>235</width>
     <height>376</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>187</width>
-    <height>376</height>
+    <width>163</width>
+    <height>332</height>
+   </size>
+  </property>
+  <property name="baseSize">
+   <size>
+    <width>250</width>
+    <height>380</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -125,7 +131,7 @@
       <property name="minimumSize">
        <size>
         <width>100</width>
-        <height>40</height>
+        <height>20</height>
        </size>
       </property>
       <property name="toolTip">
