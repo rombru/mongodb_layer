@@ -6,7 +6,7 @@
 name=MongoDB Layer
 qgisMinimumVersion=3.0
 description=This plugin gives the possibility to create a layer from MongoDB datasource
-version=1.1.1
+version=1.2.0
 author=Romain Bruyère
 email=rom.bruyere@gmail.com
 
@@ -31,6 +31,13 @@ repository=https://github.com/rombru/mongodb_layer
 
 hasProcessingProvider=no
 changelog=
+    Version 1.2.0
+    - Add base and adaptive size for the plugin
+    - Remove frame borders around some textboxes
+    - Add accessibility labels and tooltips
+    - Add a warning if the limit number of geometries is exceeded and collection is not fully loaded
+    - Sort dropdowns
+    - Add support for Python 3.7 and Python 3.8
     Version 1.1.1
     - Fix layer loading when some fields are missing
     - Exception handling
