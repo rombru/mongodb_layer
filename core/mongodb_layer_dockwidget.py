@@ -104,7 +104,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         from pymongo import MongoClient  # noqa
         self.mongo_client = MongoClient(self.connection_string, serverSelectionTimeoutMS=2000)
 
-        dbs = self.mongo_client.list_database_names()
+        dbs = sorted(self.mongo_client.list_database_names())
         if dbs:
             self.databaseBox.addItems(dbs)
             self.databaseBox.setCurrentIndex(-1)
@@ -120,7 +120,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.addLayerButton.setEnabled(False)
 
         self.db = self.databaseBox.currentText()
-        collections = self.mongo_client[self.db].list_collection_names()
+        collections = sorted(self.mongo_client[self.db].list_collection_names())
         if collections:
             self.collectionBox.addItems(collections)
             self.collectionBox.setCurrentIndex(-1)
