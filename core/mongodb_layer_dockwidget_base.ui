@@ -9,33 +9,33 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>235</width>
-    <height>376</height>
+    <width>250</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>163</width>
-    <height>332</height>
+    <width>150</width>
+    <height>100</height>
    </size>
   </property>
   <property name="baseSize">
    <size>
     <width>250</width>
-    <height>380</height>
+    <height>300</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Add MongoDB Layer</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
-   <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,0,1,0,0,0,0,0,0">
+   <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,0,0,0,0,0,1,0,0">
     <item>
      <widget class="QPlainTextEdit" name="connectionTextEdit">
       <property name="minimumSize">
        <size>
         <width>100</width>
-        <height>40</height>
+        <height>20</height>
        </size>
       </property>
       <property name="accessibleDescription">
