@@ -208,7 +208,7 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         return limit_exceeded
 
     def double_quote_json_keys(self, json_string):
-        return re.sub('([{,]\s*)([^"\':]+)(\s*:)', "\g<1>\"\g<2>\"\g<3>", json_string)
+        return re.sub('([{,]\s*)([^"\':\s]+)(\s*:)', "\g<1>\"\g<2>\"\g<3>", json_string)
 
     def replace_simple_quote(self, json_string):
         json_string = re.sub('([{,]\s*)(\')([^\']+)(\')(\s*:)', "\g<1>\"\g<3>\"\g<5>", json_string)
