@@ -32,11 +32,12 @@ class MongoDBLayer(QgsVectorLayer):
         super(MongoDBLayer, self). \
             __init__(self.get_uri(self.geometry_type, epsg), collection + '-' + str(uuid.uuid4())[0:4],"memory")
 
-        self.startEditing()
-        self.qgs_fields = self.get_qgs_fields(data, fields)
-        self.add_qgs_fields_to_layer(self.qgs_fields)
-        self.add_mongo_db_features(data, self.qgs_fields)
-        self.commitChanges()
+        if data:
+            self.startEditing()
+            self.qgs_fields = self.get_qgs_fields(data, fields)
+            self.add_qgs_fields_to_layer(self.qgs_fields)
+            self.add_mongo_db_features(data, self.qgs_fields)
+            self.commitChanges()
 
     def get_uri(self, geometry_type, epsg):
         if not epsg:
