@@ -193,7 +193,8 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             QgsMessageLog.logMessage('{}: {}'.format(type(e).__name__, e), level=Qgis.Critical)
 
     async def add_layer(self, query, limit, epsg):
-        json_query = json.loads(self.replace_simple_quote(self.double_quote_json_keys(query)))
+        from bson import json_util  # noqa
+        json_query = json.loads(self.handle_mongo_types(self.replace_simple_quote(self.double_quote_json_keys(query))), object_hook=json_util.object_hook)
         data = list(self.mongo_client[self.db][self.collection].find(json_query).limit(int(limit)+1))
         limit_exceeded = False
 
@@ -213,6 +214,69 @@ class MongoDBLayerDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     def replace_simple_quote(self, json_string):
         json_string = re.sub('([{,]\s*)(\')([^\']+)(\')(\s*:)', "\g<1>\"\g<3>\"\g<5>", json_string)
         json_string = re.sub('(:\s*)(\')([^\']+)(\')([},]\s*)', "\g<1>\"\g<3>\"\g<5>", json_string)
+        return json_string
+
+    def handle_mongo_types(self, json_string):
+        json_string = re.sub(r'new ObjectId\s*\(\s*\"(\S+)\"\s*\)',
+                             r'{"$oid": "\1"}',
+                             json_string)
+        json_string = re.sub(r'ObjectId\s*\(\s*\"(\S+)\"\s*\)',
+                          r'{"$oid": "\1"}',
+                             json_string)
+        json_string = re.sub(r'new\s*ISODate\s*\(\s*(\S+)\s*\)',
+                             r'{"$date": \1}',
+                             json_string)
+        json_string = re.sub(r'ISODate\s*\(\s*(\S+)\s*\)',
+                          r'{"$date": \1}',
+                             json_string)
+        json_string = re.sub(r'new\s*Date\s*\(\s*(\S+)\s*\)',
+                             r'{"$date": \1}',
+                             json_string)
+        json_string = re.sub(r'Date\s*\(\s*(\S+)\s*\)',
+                             r'{"$date": \1}',
+                             json_string)
+        json_string = re.sub(r'new\s*Timestamp\s*\(\s*{\s*t\s*:\s*(\S+)\s*,\s*i\s*:\s*(\S+)\s*}\s*\)',
+                             r'{"$timestamp":{"t": \1, "i": \2}}',
+                             json_string)
+        json_string = re.sub(r'Timestamp\s*\(\s*{\s*t\s*:\s*(\S+)\s*,\s*i\s*:\s*(\S+)\s*}\s*\)',
+                             r'{"$timestamp":{"t": \1, "i": \2}}',
+                             json_string)
+        json_string = re.sub(r'new\s*Timestamp\s*\(\s*{\s*t\s*:\s*(\S+)\s*}\s*\)',
+                             r'{"$timestamp":{"t": \1}}',
+                             json_string)
+        json_string = re.sub(r'Timestamp\s*\(\s*{\s*t\s*:\s*(\S+)\s*}\s*\)',
+                             r'{"$timestamp":{"t": \1}}',
+                             json_string)
+        json_string = re.sub(r'new\s*NumberInt\s*\(\s*(\S+)\s*\)',
+                          r'{"$numberInt": "\1"}',
+                             json_string)
+        json_string = re.sub(r'NumberInt\s*\(\s*(\S+)\s*\)',
+                             r'{"$numberInt": "\1"}',
+                             json_string)
+        json_string = re.sub(r'new\s*NumberLong\s*\(\s*(\S+)\s*\)',
+                             r'{"$numberLong": "\1"}',
+                             json_string)
+        json_string = re.sub(r'NumberLong\s*\(\s*(\S+)\s*\)',
+                             r'{"$numberLong": "\1"}',
+                             json_string)
+        json_string = re.sub(r'new\s*NumberDecimal\s*\(\s*(\S+)\s*\)',
+                             r'{"$numberDecimal": "\1"}',
+                             json_string)
+        json_string = re.sub(r'NumberDecimal\s*\(\s*(\S+)\s*\)',
+                             r'{"$numberDecimal": "\1"}',
+                             json_string)
+        json_string = re.sub(r'new\s*MinKey\s*\(\s*\)',
+                             r'{"$minKey": 1}',
+                             json_string)
+        json_string = re.sub(r'MinKey\s*\(\s*\)',
+                             r'{"$minKey": 1}',
+                             json_string)
+        json_string = re.sub(r'new\s*MaxKey\s*\(\s*\)',
+                             r'{"$maxKey": 1}',
+                             json_string)
+        json_string = re.sub(r'MaxKey\s*\(\s*\)',
+                             r'{"$maxKey": 1}',
+                             json_string)
         return json_string
 
     def closeEvent(self, event):
