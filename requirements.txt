@@ -1,0 +1,15 @@
+aioquic
+anyio
+ctypes_snappy
+httpcore
+httpx
+kerberos
+pyOpenSSL
+pymongo_auth_aws
+pymongocrypt
+service_identity
+sniffio
+trio
+winkerberos
+wmi
+zstandard
