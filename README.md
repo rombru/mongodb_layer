@@ -6,6 +6,10 @@ This repository contains a plugin which create layers from a MongoDB datasource.
 - QGIS 3.0+
 - Python 3.7+
 
+If an error occurs, the error message will be displayed in QGIS under the Log Messages panel.
+
+Because MongoDB collections often contain unstructured data, it is quite complicated to test all different cases. If you encounter any issue, please provide a sample of your data so that I can reproduce the problem.
+
 ## Features
 - Select a database, a collection and a geometry field
 - Import documents as features
